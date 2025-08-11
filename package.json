@@ -1,0 +1,26 @@
+{
+  "name": "gpt-feedback-api",
+  "version": "1.0.0",
+  "description": "Node server to proxy GPT API requests securely for Captivate",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=16.x"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express",
+    "gpt",
+    "api",
+    "glitch"
+  ]
+}
