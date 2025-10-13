@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "description": "Secure proxy for AI Coach (OpenAI)",
   "type": "module",
-  "main": "src/server.js",
-  "scripts": {
-    "start": "node src/server.js"
-  },
+  "main": "server.js",
+"scripts": { "start": "node server.js" }
   "dependencies": {
     "express": "^4.19.2",
     "cors": "^2.8.5"
