@@ -1,21 +1,23 @@
 import express from "express";
-import fetch from "node-fetch";
 import cors from "cors";
 
 const app = express();
 
-// ✅ Allowed front-end domains
+// ✅ Allowed front-end origins (add/remove as needed)
 const ALLOWED = new Set([
-  "https://portfolio.visiomediatech.com",   // your portfolio site
-  "http://localhost:3000",                  // local testing
-  "http://127.0.0.1:5500"                   // optional local setup
+  "https://portfolio.visiomediatech.com",
+  "https://tonymosby360photography.com",
+  "https://www.tonymosby360photography.com",
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:8080",
+  "http://127.0.0.1:8080"
 ]);
 
-// ✅ CORS setup
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || ALLOWED.has(origin)) return cb(null, true);
-    cb(new Error(`CORS blocked for origin: ${origin}`));
+    return cb(new Error(`CORS blocked for origin: ${origin}`));
   },
   methods: ["POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
@@ -23,17 +25,18 @@ app.use(cors({
 
 app.use(express.json());
 
-// ✅ Health check (for quick testing)
+// Health check for quick verification
 app.get("/health", (_, res) => res.json({ ok: true }));
 
-// ✅ AI Route
+// Main AI route
 app.post("/api/coach", async (req, res) => {
   try {
     const { prompt } = req.body || {};
-    if (!prompt) {
+    if (!prompt || typeof prompt !== "string") {
       return res.status(400).json({ error: "Missing prompt" });
     }
 
+    // Use native fetch (Node 18+)
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -48,14 +51,12 @@ app.post("/api/coach", async (req, res) => {
     });
 
     const data = await r.json();
-    res.status(r.ok ? 200 : r.status).json(data);
-
-  } catch (err) {
-    console.error("Server error:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(r.ok ? 200 : r.status).json(data);
+  } catch (e) {
+    console.error("Server error:", e);
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
-// ✅ Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 AI Coach server listening on ${PORT}`));
