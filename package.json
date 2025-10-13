@@ -1,26 +1,17 @@
 {
-  "name": "gpt-feedback-api",
+  "name": "ai-coach-server",
   "version": "1.0.0",
-  "description": "Node server to proxy GPT API requests securely for Captivate",
-  "main": "server.js",
+  "description": "Secure proxy for AI Coach (OpenAI)",
   "type": "module",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "dotenv": "^16.0.0",
-    "node-fetch": "^3.3.2"
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
   },
   "engines": {
-    "node": ">=16.x"
-  },
-  "license": "MIT",
-  "keywords": [
-    "node",
-    "express",
-    "gpt",
-    "api",
-    "glitch"
-  ]
+    "node": ">=18"
+  }
 }
