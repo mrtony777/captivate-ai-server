@@ -5,25 +5,39 @@ import cors from "cors";
 const app = express();
 
 /* ------------------------- CORS: allowed front-ends ------------------------- */
-const ALLOWED = new Set([
+
+// Production origins (S3 / portfolio sites)
+const PROD_ORIGINS = new Set([
   "https://tonydemos.s3.us-east-2.amazonaws.com",   // Captivate course on S3
   "https://portfolio.visiomediatech.com",
   "https://tonymosby360photography.com",
-  "https://www.tonymosby360photography.com",
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "http://localhost:8080",
-  "http://127.0.0.1:8080"
+  "https://www.tonymosby360photography.com"
 ]);
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || ALLOWED.has(origin)) return cb(null, true);
+    // No origin (server-to-server / curl) -> allow
+    if (!origin) return cb(null, true);
+
+    // Allow any localhost for Captivate preview & dev
+    if (origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1")) {
+      return cb(null, true);
+    }
+
+    // Allow known production origins
+    if (PROD_ORIGINS.has(origin)) {
+      return cb(null, true);
+    }
+
+    // Block everything else
     return cb(new Error(`CORS blocked for origin: ${origin}`));
   },
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// Handle preflight explicitly (helps with some browsers)
+app.options("*", cors());
 
 app.use(express.json());
 
